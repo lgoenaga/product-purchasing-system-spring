@@ -2,6 +2,7 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.enums.CartStatus;
 import co.edu.cesde.pps.util.CalculationUtils;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
  * - createdAt: Fecha de creación del carrito
  * - updatedAt: Fecha de última actualización
  * - items: Lista de items del carrito (1:N con CartItem)
+ *
+ * Tabla BD: carts
  *
  * Comportamiento por tipo de usuario:
  * - Invitado: user = NULL, session = <UserSession>
@@ -62,14 +65,19 @@ import java.util.stream.Collectors;
  *
  * Ver documentación completa en: documents_external/er_model_documentation.md - Sección 5
  *
- * Relaciones:
+ * Relaciones (futuro - etapa09):
  * - N:1 con User (opcional, nullable para invitados)
  * - N:1 con UserSession (obligatorio)
  * - 1:N con CartItem (un carrito tiene muchos items)
  *
  * NOTA: Los métodos de gestión bidireccional (addItem, removeItem) fueron movidos
  * a la capa de servicio (CartService) en etapa 05 para mantener el modelo limpio.
+ *
+ * Refactorizado con Lombok en Etapa 07.
+ * Anotaciones JPA básicas agregadas en Etapa 08.
  */
+@Entity
+@Table(name = "carts")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -77,17 +85,29 @@ import java.util.stream.Collectors;
 @Builder
 public class Cart {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_id")
     private Long cartId;
+
+    // Sin @ManyToOne todavía - se agregará en etapa09
     private User user; // Nullable - NULL para invitados
     private UserSession session;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     @Builder.Default
     private CartStatus status = CartStatus.OPEN;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at", nullable = false)
     @Builder.Default
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    // Colección para relación 1:N
+    // Colección para relación 1:N - sin @OneToMany todavía
     @Builder.Default
     private List<CartItem> items = new ArrayList<>();
 
