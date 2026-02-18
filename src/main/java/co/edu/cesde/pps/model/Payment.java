@@ -2,6 +2,7 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.enums.Currency;
 import co.edu.cesde.pps.util.ValidationUtils;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -23,6 +24,8 @@ import java.util.Objects;
  * - providerReference: Referencia del proveedor de pagos (ej: ID de transacción de pasarela)
  * - paidAt: Fecha/hora en que se completó el pago exitosamente
  *
+ * Tabla BD: payments
+ *
  * Consideraciones de diseño:
  * - Múltiples pagos por orden permiten manejar:
  *   * Reintentos de pago fallido
@@ -33,11 +36,16 @@ import java.util.Objects;
  * - Currency enum permite soportar múltiples monedas
  * - BigDecimal en amount para precisión monetaria
  *
- * Relaciones:
+ * Relaciones (futuro - etapa09):
  * - N:1 con Order (muchos pagos pertenecen a una orden)
  * - N:1 con PaymentMethod (muchos pagos usan un método)
  * - N:1 con PaymentStatus (muchos pagos tienen un estado)
+ *
+ * Refactorizado con Lombok en Etapa 07.
+ * Anotaciones JPA básicas agregadas en Etapa 08.
  */
+@Entity
+@Table(name = "payments")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -45,13 +53,27 @@ import java.util.Objects;
 @Builder
 public class Payment {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "payment_id")
     private Long paymentId;
+
+    // Sin @ManyToOne todavía - se agregará en etapa09
     private Order order;
     private PaymentMethod paymentMethod;
     private PaymentStatus paymentStatus;
+
+    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "currency", nullable = false)
     private Currency currency;
+
+    @Column(name = "provider_reference", length = 255)
     private String providerReference;
+
+    @Column(name = "paid_at")
     private LocalDateTime paidAt;
 
     // Setter personalizado con validación (override de Lombok)
