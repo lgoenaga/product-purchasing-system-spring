@@ -2,6 +2,8 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,6 +44,11 @@ import java.util.Objects;
  * - 1:N con OrderItem (items de la orden)
  * - 1:N con Payment (pagos asociados, puede haber reintentos)
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Order {
 
     private Long orderId;
@@ -50,114 +57,26 @@ public class Order {
     private Long orderStatusId;
     private Long shippingAddressId;
     private Long billingAddressId;
-    private BigDecimal subtotal;
-    private BigDecimal tax;
-    private BigDecimal shippingCost;
-    private BigDecimal total;
-    private LocalDateTime createdAt;
+    @Builder.Default
+    private BigDecimal subtotal = BigDecimal.ZERO;
+    @Builder.Default
+    private BigDecimal tax = BigDecimal.ZERO;
+    @Builder.Default
+    private BigDecimal shippingCost = BigDecimal.ZERO;
+    @Builder.Default
+    private BigDecimal total = BigDecimal.ZERO;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     // Colección para relación 1:N con OrderItem
-    private List<OrderItem> items;
+    @Builder.Default
+    private List<OrderItem> items = new ArrayList<>();
 
-    // Constructor vacío (requerido para JPA futuro)
-    public Order() {
-        this.items = new ArrayList<>();
-    }
-
-    // Constructor con campos obligatorios
-    public Order(String orderNumber, Long userId, Long orderStatusId,
-                 Long shippingAddressId, Long billingAddressId) {
-        this.orderNumber = orderNumber;
-        this.userId = userId;
-        this.orderStatusId = orderStatusId;
-        this.shippingAddressId = shippingAddressId;
-        this.billingAddressId = billingAddressId;
-        this.subtotal = BigDecimal.ZERO;
-        this.tax = BigDecimal.ZERO;
-        this.shippingCost = BigDecimal.ZERO;
-        this.total = BigDecimal.ZERO;
-        this.createdAt = LocalDateTime.now();
-        this.items = new ArrayList<>();
-    }
-
-    // Constructor completo (excepto ID y timestamp autogenerado)
-    public Order(String orderNumber, Long userId, Long orderStatusId,
-                 Long shippingAddressId, Long billingAddressId,
-                 BigDecimal subtotal, BigDecimal tax, BigDecimal shippingCost, BigDecimal total) {
-        this.orderNumber = orderNumber;
-        this.userId = userId;
-        this.orderStatusId = orderStatusId;
-        this.shippingAddressId = shippingAddressId;
-        this.billingAddressId = billingAddressId;
-        this.subtotal = subtotal != null ? subtotal : BigDecimal.ZERO;
-        this.tax = tax != null ? tax : BigDecimal.ZERO;
-        this.shippingCost = shippingCost != null ? shippingCost : BigDecimal.ZERO;
-        this.total = total != null ? total : BigDecimal.ZERO;
-        this.createdAt = LocalDateTime.now();
-        this.items = new ArrayList<>();
-    }
-
-    // Getters y Setters
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getOrderStatusId() {
-        return orderStatusId;
-    }
-
-    public void setOrderStatusId(Long orderStatusId) {
-        this.orderStatusId = orderStatusId;
-    }
-
-    public Long getShippingAddressId() {
-        return shippingAddressId;
-    }
-
-    public void setShippingAddressId(Long shippingAddressId) {
-        this.shippingAddressId = shippingAddressId;
-    }
-
-    public Long getBillingAddressId() {
-        return billingAddressId;
-    }
-
-    public void setBillingAddressId(Long billingAddressId) {
-        this.billingAddressId = billingAddressId;
-    }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
+    // Setters personalizados con validación (override de Lombok)
 
     public void setSubtotal(BigDecimal subtotal) {
         ValidationUtils.validateNonNegative(subtotal, "subtotal");
         this.subtotal = subtotal;
-    }
-
-    public BigDecimal getTax() {
-        return tax;
     }
 
     public void setTax(BigDecimal tax) {
@@ -165,38 +84,14 @@ public class Order {
         this.tax = tax;
     }
 
-    public BigDecimal getShippingCost() {
-        return shippingCost;
-    }
-
     public void setShippingCost(BigDecimal shippingCost) {
         ValidationUtils.validateNonNegative(shippingCost, "shippingCost");
         this.shippingCost = shippingCost;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
-
     public void setTotal(BigDecimal total) {
         ValidationUtils.validateNonNegative(total, "total");
         this.total = total;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public List<OrderItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
     }
 
     // Método helper para calcular total automáticamente
@@ -219,7 +114,7 @@ public class Order {
         return Objects.hash(orderId);
     }
 
-    // toString sin navegación a objetos relacionados (solo IDs y tamaño de colección)
+    // toString personalizado sin navegación a objetos relacionados (solo IDs y tamaño de colección)
 
     @Override
     public String toString() {
