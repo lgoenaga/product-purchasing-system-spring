@@ -1,5 +1,6 @@
 package co.edu.cesde.pps.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -20,14 +21,21 @@ import java.util.Objects;
  * - subcategories: Lista de subcategorías (1:N con Category)
  * - products: Lista de productos de esta categoría (1:N con Product)
  *
- * Relaciones:
+ * Tabla BD: categories
+ *
+ * Relaciones (futuro - etapa09):
  * - N:1 con Category (auto-referencia para jerarquía - muchas categorías tienen un padre)
  * - 1:N con Category (una categoría tiene muchas subcategorías)
  * - 1:N con Product (una categoría tiene muchos productos)
  *
  * NOTA: Los métodos de gestión bidireccional (addSubcategory, removeSubcategory) fueron movidos
  * a la capa de servicio (CategoryService) en etapa 05 para mantener el modelo limpio.
+ *
+ * Refactorizado con Lombok en Etapa 07.
+ * Anotaciones JPA básicas agregadas en Etapa 08.
  */
+@Entity
+@Table(name = "categories")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,12 +43,21 @@ import java.util.Objects;
 @Builder
 public class Category {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long categoryId;
+
+    // Sin @ManyToOne todavía - se agregará en etapa09
     private Category parent; // Nullable - NULL para categorías raíz
+
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
+
+    @Column(name = "slug", nullable = false, unique = true, length = 100)
     private String slug;
 
-    // Colecciones para relaciones 1:N
+    // Colecciones para relaciones 1:N - sin @OneToMany todavía
     @Builder.Default
     private List<Category> subcategories = new ArrayList<>();
     @Builder.Default
