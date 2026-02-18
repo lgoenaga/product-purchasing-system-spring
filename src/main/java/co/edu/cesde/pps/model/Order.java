@@ -2,6 +2,7 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -29,6 +30,8 @@ import java.util.Objects;
  * - total: Total final de la orden (subtotal + tax + shippingCost)
  * - createdAt: Fecha de creación de la orden
  *
+ * Tabla BD: orders
+ *
  * Consideraciones de diseño:
  * - userId es obligatorio: los invitados deben registrarse antes del checkout
  * - Se guardan totales (subtotal, tax, shippingCost, total) para auditoría
@@ -36,14 +39,19 @@ import java.util.Objects;
  * - Direcciones de envío y facturación pueden ser diferentes
  * - BigDecimal en todos los campos monetarios para precisión
  *
- * Relaciones (futuro - etapa02):
+ * Relaciones (futuro - etapa09):
  * - N:1 con User (una orden pertenece a un usuario)
  * - N:1 con OrderStatus (estado actual)
  * - N:1 con Address (shipping_address_id)
  * - N:1 con Address (billing_address_id)
  * - 1:N con OrderItem (items de la orden)
  * - 1:N con Payment (pagos asociados, puede haber reintentos)
+ *
+ * Refactorizado con Lombok en Etapa 07.
+ * Anotaciones JPA básicas agregadas en Etapa 08.
  */
+@Entity
+@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -51,24 +59,47 @@ import java.util.Objects;
 @Builder
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long orderId;
+
+    @Column(name = "order_number", nullable = false, unique = true, length = 50)
     private String orderNumber;
+
+    @Column(name = "user_id", nullable = false)
     private Long userId; // NOT NULL - checkout requiere usuario registrado
+
+    @Column(name = "order_status_id", nullable = false)
     private Long orderStatusId;
+
+    @Column(name = "shipping_address_id", nullable = false)
     private Long shippingAddressId;
+
+    @Column(name = "billing_address_id", nullable = false)
     private Long billingAddressId;
+
+    @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
     @Builder.Default
     private BigDecimal subtotal = BigDecimal.ZERO;
+
+    @Column(name = "tax", nullable = false, precision = 10, scale = 2)
     @Builder.Default
     private BigDecimal tax = BigDecimal.ZERO;
+
+    @Column(name = "shipping_cost", nullable = false, precision = 10, scale = 2)
     @Builder.Default
     private BigDecimal shippingCost = BigDecimal.ZERO;
+
+    @Column(name = "total", nullable = false, precision = 10, scale = 2)
     @Builder.Default
     private BigDecimal total = BigDecimal.ZERO;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Colección para relación 1:N con OrderItem
+    // Colección para relación 1:N con OrderItem - sin @OneToMany todavía
     @Builder.Default
     private List<OrderItem> items = new ArrayList<>();
 
