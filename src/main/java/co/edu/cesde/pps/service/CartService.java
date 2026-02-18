@@ -407,8 +407,7 @@ public class CartService {
 
                 // Gestión bidireccional
                 userCart.getItems().add(newItem);
-
-
+            }
         }
 
         // 5. Marcar carrito invitado como ABANDONED
