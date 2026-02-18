@@ -1,5 +1,6 @@
 package co.edu.cesde.pps.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
@@ -14,9 +15,16 @@ import java.util.Objects;
  * - name: Nombre único del rol (UNIQUE)
  * - description: Descripción del rol y sus permisos
  *
- * Relaciones (futuro - etapa02):
+ * Tabla BD: roles
+ *
+ * Relaciones (futuro - etapa09):
  * - 1:N con User (un rol puede tener múltiples usuarios)
+ *
+ * Refactorizado con Lombok en Etapa 07.
+ * Anotaciones JPA básicas agregadas en Etapa 08.
  */
+@Entity
+@Table(name = "roles")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,8 +32,15 @@ import java.util.Objects;
 @Builder
 public class Role {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
     private Long roleId;
+
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
+
+    @Column(name = "description", length = 255)
     private String description;
 
     // equals y hashCode basados en ID
