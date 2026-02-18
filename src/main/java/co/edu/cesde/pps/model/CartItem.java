@@ -2,6 +2,8 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -32,6 +34,11 @@ import java.util.Objects;
  * - N:1 con Cart (muchos items pertenecen a un carrito)
  * - N:1 con Product (muchos items referencian a un producto)
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CartItem {
 
     private Long cartItemId;
@@ -41,65 +48,11 @@ public class CartItem {
     private BigDecimal unitPrice;
     private LocalDateTime addedAt;
 
-    // Constructor vacío (requerido para JPA futuro)
-    public CartItem() {
-    }
-
-    // Constructor con campos obligatorios
-    public CartItem(Cart cart, Product product, Integer quantity, BigDecimal unitPrice) {
-        this.cart = cart;
-        this.product = product;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.addedAt = LocalDateTime.now();
-    }
-
-    // Constructor completo (excepto ID y timestamp autogenerado)
-    public CartItem(Cart cart, Product product, Integer quantity, BigDecimal unitPrice, LocalDateTime addedAt) {
-        this.cart = cart;
-        this.product = product;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.addedAt = addedAt != null ? addedAt : LocalDateTime.now();
-    }
-
-    // Getters y Setters
-
-    public Long getCartItemId() {
-        return cartItemId;
-    }
-
-    public void setCartItemId(Long cartItemId) {
-        this.cartItemId = cartItemId;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
+    // Setters personalizados con validación (override de Lombok)
 
     public void setQuantity(Integer quantity) {
         ValidationUtils.validatePositive(quantity, "quantity");
         this.quantity = quantity;
-    }
-
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
     }
 
     public void setUnitPrice(BigDecimal unitPrice) {
@@ -107,13 +60,6 @@ public class CartItem {
         this.unitPrice = unitPrice;
     }
 
-    public LocalDateTime getAddedAt() {
-        return addedAt;
-    }
-
-    public void setAddedAt(LocalDateTime addedAt) {
-        this.addedAt = addedAt;
-    }
 
     // Método helper para calcular subtotal del item
     public BigDecimal calculateSubtotal() {
