@@ -75,39 +75,21 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class Cart {
 
     private Long cartId;
     private User user; // Nullable - NULL para invitados
     private UserSession session;
-    private CartStatus status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Builder.Default
+    private CartStatus status = CartStatus.OPEN;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     // Colección para relación 1:N
-    private List<CartItem> items;
-
-
-    // Constructor para carrito de invitado
-    public Cart(UserSession session) {
-        this.user = null; // Invitado
-        this.session = session;
-        this.status = CartStatus.OPEN;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.items = new ArrayList<>();
-    }
-
-    // Constructor para carrito de usuario registrado
-    public Cart(User user, UserSession session) {
-        this.user = user;
-        this.session = session;
-        this.status = CartStatus.OPEN;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.items = new ArrayList<>();
-    }
+    @Builder.Default
+    private List<CartItem> items = new ArrayList<>();
 
     // Métodos helper de consulta (sin efectos secundarios)
 
@@ -151,6 +133,19 @@ public class Cart {
         return Objects.hash(cartId);
     }
 
-    // toString sin navegación a objetos relacionados (solo IDs y tamaño de colección)
+    // toString personalizado sin navegación a objetos relacionados (solo IDs y tamaño de colección)
 
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "cartId=" + cartId +
+                ", userId=" + (user != null ? user.getUserId() : null) +
+                ", sessionId=" + (session != null ? session.getSessionId() : null) +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", itemsCount=" + (items != null ? items.size() : 0) +
+                ", total=" + calculateTotal() +
+                '}';
+    }
 }
