@@ -242,6 +242,8 @@ Se realizaron commits granulares por cada clase refactorizada:
 13. `refactor: migrate PaymentMethod to Lombok annotations`
 14. `refactor: migrate PaymentStatus to Lombok annotations`
 15. `refactor: update services to use Builder pattern with Lombok models`
+16. `fix: correct missing closing brace in mergeGuestCartToUserCart method`
+17. `docs: add ETAPA07_SUMMARY with Lombok refactoring details`
 
 ## Validación
 

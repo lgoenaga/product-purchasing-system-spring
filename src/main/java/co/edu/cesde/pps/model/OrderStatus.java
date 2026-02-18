@@ -15,6 +15,8 @@ import java.util.Objects;
  *
  * Relaciones (futuro - etapa02):
  * - 1:N con Order (un estado puede aplicar a múltiples órdenes)
+ *
+ * Refactorizado con Lombok en Etapa 07 para eliminar boilerplate.
  */
 @Getter
 @Setter
