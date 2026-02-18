@@ -2,6 +2,7 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -20,6 +21,8 @@ import java.util.Objects;
  * - unitPrice: Precio unitario al momento de la compra (histórico)
  * - lineTotal: Total de la línea (unitPrice * quantity)
  *
+ * Tabla BD: order_items
+ *
  * Restricción UNIQUE (order, product):
  * Un producto no puede aparecer duplicado en la misma orden. Si el usuario
  * compra el mismo producto dos veces en checkout, debe consolidarse en un
@@ -34,10 +37,15 @@ import java.util.Objects;
  * Se puede calcular (unitPrice * quantity) o guardar para optimización.
  * Guardarlo facilita consultas y reportes sin recalcular.
  *
- * Relaciones:
+ * Relaciones (futuro - etapa09):
  * - N:1 con Order (muchos items pertenecen a una orden)
  * - N:1 con Product (muchos items referencian a un producto)
+ *
+ * Refactorizado con Lombok en Etapa 07.
+ * Anotaciones JPA básicas agregadas en Etapa 08.
  */
+@Entity
+@Table(name = "order_items")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -45,11 +53,22 @@ import java.util.Objects;
 @Builder
 public class OrderItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_item_id")
     private Long orderItemId;
+
+    // Sin @ManyToOne todavía - se agregará en etapa09
     private Order order;
     private Product product;
+
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
+
+    @Column(name = "line_total", nullable = false, precision = 10, scale = 2)
     private BigDecimal lineTotal;
 
     // Setters personalizados con validación (override de Lombok)
