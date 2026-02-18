@@ -2,6 +2,7 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -21,6 +22,8 @@ import java.util.Objects;
  * - unitPrice: Precio unitario congelado al agregar (BigDecimal para precisión)
  * - addedAt: Fecha en que se agregó el item al carrito
  *
+ * Tabla BD: cart_items
+ *
  * Restricción UNIQUE (cart, product):
  * Un producto no puede aparecer duplicado en el mismo carrito. Si se agrega
  * el mismo producto dos veces, se debe actualizar la cantidad del item existente.
@@ -30,10 +33,15 @@ import java.util.Objects;
  * Esto asegura consistencia si el precio del producto cambia mientras el
  * usuario navega. El precio se "congela" al agregar al carrito.
  *
- * Relaciones:
+ * Relaciones (futuro - etapa09):
  * - N:1 con Cart (muchos items pertenecen a un carrito)
  * - N:1 con Product (muchos items referencian a un producto)
+ *
+ * Refactorizado con Lombok en Etapa 07.
+ * Anotaciones JPA básicas agregadas en Etapa 08.
  */
+@Entity
+@Table(name = "cart_items")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -41,11 +49,22 @@ import java.util.Objects;
 @Builder
 public class CartItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_item_id")
     private Long cartItemId;
+
+    // Sin @ManyToOne todavía - se agregará en etapa09
     private Cart cart;
     private Product product;
+
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
+
+    @Column(name = "added_at", nullable = false, updatable = false)
     private LocalDateTime addedAt;
 
     // Setters personalizados con validación (override de Lombok)
