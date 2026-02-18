@@ -2,6 +2,8 @@ package co.edu.cesde.pps.model;
 
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -36,6 +38,11 @@ import java.util.Objects;
  * - N:1 con Order (muchos items pertenecen a una orden)
  * - N:1 con Product (muchos items referencian a un producto)
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderItem {
 
     private Long orderItemId;
@@ -45,58 +52,7 @@ public class OrderItem {
     private BigDecimal unitPrice;
     private BigDecimal lineTotal;
 
-    // Constructor vacío (requerido para JPA futuro)
-    public OrderItem() {
-    }
-
-    // Constructor con campos obligatorios (lineTotal se calcula)
-    public OrderItem(Order order, Product product, Integer quantity, BigDecimal unitPrice) {
-        this.order = order;
-        this.product = product;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.lineTotal = calculateLineTotal();
-    }
-
-    // Constructor completo (excepto ID autogenerado)
-    public OrderItem(Order order, Product product, Integer quantity,
-                     BigDecimal unitPrice, BigDecimal lineTotal) {
-        this.order = order;
-        this.product = product;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.lineTotal = lineTotal != null ? lineTotal : calculateLineTotal();
-    }
-
-    // Getters y Setters
-
-    public Long getOrderItemId() {
-        return orderItemId;
-    }
-
-    public void setOrderItemId(Long orderItemId) {
-        this.orderItemId = orderItemId;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
+    // Setters personalizados con validación (override de Lombok)
 
     public void setQuantity(Integer quantity) {
         ValidationUtils.validatePositive(quantity, "quantity");
@@ -105,19 +61,11 @@ public class OrderItem {
         this.lineTotal = calculateLineTotal();
     }
 
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
     public void setUnitPrice(BigDecimal unitPrice) {
         ValidationUtils.validateNonNegative(unitPrice, "unitPrice");
         this.unitPrice = unitPrice;
         // Recalcular lineTotal al cambiar unitPrice
         this.lineTotal = calculateLineTotal();
-    }
-
-    public BigDecimal getLineTotal() {
-        return lineTotal;
     }
 
     public void setLineTotal(BigDecimal lineTotal) {
@@ -145,7 +93,7 @@ public class OrderItem {
         return Objects.hash(orderItemId);
     }
 
-    // toString sin navegación a objetos relacionados (solo IDs)
+    // toString personalizado sin navegación a objetos relacionados (solo IDs)
 
     @Override
     public String toString() {

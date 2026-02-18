@@ -1,6 +1,6 @@
-apackage co.edu.cesde.pps.model;
+package co.edu.cesde.pps.model;
 
-ddimport lombok.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
