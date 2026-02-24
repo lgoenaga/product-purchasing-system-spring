@@ -1,5 +1,6 @@
 package co.edu.cesde.pps.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
 import jakarta.persistence.*;
@@ -67,17 +68,21 @@ public class Order {
     @Column(name = "order_number", nullable = false, unique = true, length = 50)
     private String orderNumber;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId; // NOT NULL - checkout requiere usuario registrado
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // NOT NULL - checkout requiere usuario registrado
 
-    @Column(name = "order_status_id", nullable = false)
-    private Long orderStatusId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_status_id", nullable = false)
+    private OrderStatus orderStatus;
 
-    @Column(name = "shipping_address_id", nullable = false)
-    private Long shippingAddressId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_address_id", nullable = false)
+    private Address shippingAddress;
 
-    @Column(name = "billing_address_id", nullable = false)
-    private Long billingAddressId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "billing_address_id", nullable = false)
+    private Address billingAddress;
 
     @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
     @Builder.Default
@@ -99,7 +104,8 @@ public class Order {
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Colección para relación 1:N con OrderItem - sin @OneToMany todavía
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonManagedReference("order-items")
     @Builder.Default
     private List<OrderItem> items = new ArrayList<>();
 
@@ -152,10 +158,10 @@ public class Order {
         return "Order{" +
                 "orderId=" + orderId +
                 ", orderNumber='" + orderNumber + '\'' +
-                ", userId=" + userId +
-                ", orderStatusId=" + orderStatusId +
-                ", shippingAddressId=" + shippingAddressId +
-                ", billingAddressId=" + billingAddressId +
+                ", user=" + (user != null ? user.getUserId() : null) +
+                ", orderStatus=" + (orderStatus != null ? orderStatus.getOrderStatusId() : null) +
+                ", shippingAddress=" + (shippingAddress != null ? shippingAddress.getAddressId() : null) +
+                ", billingAddress=" + (billingAddress != null ? billingAddress.getAddressId() : null) +
                 ", subtotal=" + subtotal +
                 ", tax=" + tax +
                 ", shippingCost=" + shippingCost +

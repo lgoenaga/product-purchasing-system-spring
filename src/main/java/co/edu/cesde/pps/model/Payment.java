@@ -58,9 +58,16 @@ public class Payment {
     @Column(name = "payment_id")
     private Long paymentId;
 
-    // Sin @ManyToOne todavía - se agregará en etapa09
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id", nullable = false)
     private PaymentMethod paymentMethod;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_status_id", nullable = false)
     private PaymentStatus paymentStatus;
 
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)

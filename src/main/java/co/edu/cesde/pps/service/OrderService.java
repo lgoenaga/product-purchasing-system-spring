@@ -89,7 +89,7 @@ public class OrderService {
     public OrderDTO checkout(Long userId, Long cartId, Long shippingAddressId,
                             Long billingAddressId) {
         // 1. Validar usuario está registrado
-        userService.findUserEntityOrThrow(userId);
+        User user = userService.findUserEntityOrThrow(userId);
 
         // 2. Obtener y validar carrito
         Cart cart = cartService.findCartEntityOrThrow(cartId);
@@ -141,13 +141,21 @@ public class OrderService {
 
         // 5. Crear orden con número único
         String orderNumber = generateOrderNumber();
+
+        // NOTE: En esta etapa no hay repositorios JPA; usamos una entity de catálogo mínima.
+        OrderStatus pendingStatus = OrderStatus.builder()
+                .orderStatusId(1L)
+                .name("PENDING")
+                .description("Order created, awaiting payment")
+                .build();
+
         Order order = Order.builder()
                 .orderId(generateNextId())
                 .orderNumber(orderNumber)
-                .userId(userId)
-                .orderStatusId(1L) // TODO: orderStatusId = PENDING
-                .shippingAddressId(shippingAddressId)
-                .billingAddressId(billingAddressId)
+                .user(user)
+                .orderStatus(pendingStatus)
+                .shippingAddress(shippingAddress)
+                .billingAddress(billingAddress)
                 .subtotal(BigDecimal.ZERO)
                 .tax(BigDecimal.ZERO)
                 .shippingCost(BigDecimal.ZERO)
@@ -247,7 +255,7 @@ public class OrderService {
 
         // TODO Etapa 06: List<Order> orders = orderRepository.findByUserId(userId);
         List<Order> userOrders = ordersInMemory.stream()
-                .filter(o -> o.getUserId().equals(userId))
+                .filter(o -> o.getUser() != null && o.getUser().getUserId().equals(userId))
                 .collect(Collectors.toList());
 
         return orderMapper.toDTOList(userOrders);
@@ -262,7 +270,8 @@ public class OrderService {
     public List<OrderDTO> findOrdersByStatus(Long statusId) {
         // TODO Etapa 06: List<Order> orders = orderRepository.findByOrderStatusId(statusId);
         List<Order> statusOrders = ordersInMemory.stream()
-                .filter(o -> o.getOrderStatusId().equals(statusId))
+                .filter(o -> o.getOrderStatus() != null &&
+                        o.getOrderStatus().getOrderStatusId().equals(statusId))
                 .collect(Collectors.toList());
 
         return orderMapper.toDTOList(statusOrders);

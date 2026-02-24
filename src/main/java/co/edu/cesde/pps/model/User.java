@@ -1,5 +1,6 @@
 package co.edu.cesde.pps.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import co.edu.cesde.pps.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -56,7 +57,8 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    // Sin @ManyToOne todavía - se agregará en etapa09
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
@@ -83,7 +85,8 @@ public class User {
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Colecciones para relaciones 1:N - sin @OneToMany todavía
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference("user-addresses")
     @Builder.Default
     private List<Address> addresses = new ArrayList<>();
 

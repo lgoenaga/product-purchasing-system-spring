@@ -1,5 +1,6 @@
 package co.edu.cesde.pps.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
 import jakarta.persistence.*;
@@ -41,7 +42,10 @@ import java.util.Objects;
  * Anotaciones JPA básicas agregadas en Etapa 08.
  */
 @Entity
-@Table(name = "cart_items")
+@Table(name = "cart_items",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"cart_id", "product_id"})
+        })
 @Getter
 @Setter
 @NoArgsConstructor
@@ -54,8 +58,13 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private Long cartItemId;
 
-    // Sin @ManyToOne todavía - se agregará en etapa09
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
+    @JsonBackReference("cart-items")
     private Cart cart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(name = "quantity", nullable = false)

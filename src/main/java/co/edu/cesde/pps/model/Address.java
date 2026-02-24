@@ -1,5 +1,6 @@
 package co.edu.cesde.pps.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import co.edu.cesde.pps.enums.AddressType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,7 +48,9 @@ public class Address {
     @Column(name = "address_id")
     private Long addressId;
 
-    // Sin @ManyToOne todavía - se agregará en etapa09
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference("user-addresses")
     private User user;
 
     @Enumerated(EnumType.STRING)

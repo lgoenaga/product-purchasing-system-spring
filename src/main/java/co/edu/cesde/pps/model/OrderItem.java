@@ -1,5 +1,6 @@
 package co.edu.cesde.pps.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import co.edu.cesde.pps.util.CalculationUtils;
 import co.edu.cesde.pps.util.ValidationUtils;
 import jakarta.persistence.*;
@@ -45,7 +46,10 @@ import java.util.Objects;
  * Anotaciones JPA básicas agregadas en Etapa 08.
  */
 @Entity
-@Table(name = "order_items")
+@Table(name = "order_items",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"order_id", "product_id"})
+        })
 @Getter
 @Setter
 @NoArgsConstructor
@@ -58,8 +62,13 @@ public class OrderItem {
     @Column(name = "order_item_id")
     private Long orderItemId;
 
-    // Sin @ManyToOne todavía - se agregará en etapa09
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    @JsonBackReference("order-items")
     private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(name = "quantity", nullable = false)
