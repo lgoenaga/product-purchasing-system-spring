@@ -3,6 +3,10 @@ spring:
     activate:
       on-profile: demo
 
+app:
+  cors:
+    allowed-origins: http://localhost:5173
+
 logging:
   level:
     co.edu.cesde.pps.config.demo: INFO

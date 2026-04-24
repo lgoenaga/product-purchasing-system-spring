@@ -21,6 +21,12 @@ spring:
     init:
       mode: never
 
+app:
+  cors:
+    # Orígenes permitidos — sobreescribir en .env con CORS_ALLOWED_ORIGINS
+    # React + Vite corre por defecto en el puerto 5173
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
 logging:
   level:
     co.edu.cesde.pps: ${LOG_LEVEL:DEBUG}
