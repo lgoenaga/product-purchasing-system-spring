@@ -35,3 +35,13 @@ logging:
     org.hibernate.SQL: ${LOG_SQL_LEVEL:DEBUG}
     org.hibernate.orm.jdbc.bind: ${LOG_SQL_BIND_LEVEL:TRACE}
 
+# ================================================================
+# Springdoc OpenAPI — deshabilitado por defecto en producción.
+# Activar solo con el perfil "dev" (ver application-dev.yml).
+# ================================================================
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+

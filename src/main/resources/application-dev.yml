@@ -1,0 +1,36 @@
+# ================================================================
+# Perfil: dev
+# Activa Swagger UI y ajustes específicos para desarrollo local.
+#
+# Cómo activar:
+#   - En .env: SPRING_PROFILES_ACTIVE=dev
+#   - O al correr: --spring.profiles.active=dev
+# ================================================================
+
+app:
+  cors:
+    # En dev incluimos localhost:8081 para que "Try it out" en Swagger UI
+    # pueda hacer peticiones al propio servidor sin bloqueo CORS.
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8081}
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    # URL canónica de la UI
+    path: /swagger-ui.html
+    # Ordena los endpoints por método HTTP (GET < POST < PUT < PATCH < DELETE)
+    operations-sorter: method
+    # Ordena los grupos (tags) alfabéticamente en la UI
+    tags-sorter: alpha
+    # Expande los modelos por defecto en la sección "Schemas"
+    default-models-expand-depth: 1
+    # Preserva el token de autorización al recargar la página
+    persist-authorization: true
+    # Muestra el tiempo que tardó la respuesta
+    display-request-duration: true
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  # Incluye solo los endpoints bajo /api/v1 (excluye endpoints internos de Spring)
+  paths-to-match: /api/v1/**
+

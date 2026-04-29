@@ -64,15 +64,30 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // Dividir por comas para soportar múltiples orígenes (ej: React dev + staging)
-        String[] origins = allowedOrigins.split(",");
+        String[] origins = allowedOrigins.split("\\s*,\\s*");
 
         log.info("CORS configurado para los orígenes: {}", allowedOrigins);
 
-        registry.addMapping("/**")
+        // API endpoints — CORS completo con credenciales
+        registry.addMapping("/api/**")
                 .allowedOrigins(origins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
+                .maxAge(3600);
+
+        // Swagger UI y OpenAPI docs — CORS permisivo (sin credenciales)
+        // Necesario para que "Try it out" funcione cuando la UI está en un origen diferente.
+        registry.addMapping("/swagger-ui/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET")
+                .allowedHeaders("*")
+                .maxAge(3600);
+
+        registry.addMapping("/v3/api-docs/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET")
+                .allowedHeaders("*")
                 .maxAge(3600);
     }
 }

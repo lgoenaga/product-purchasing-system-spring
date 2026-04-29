@@ -72,6 +72,18 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- ================================================================
+             Springdoc OpenAPI — Swagger UI (solo perfil dev)
+             Compatible con Spring Boot 3.x / Java 21
+             UI disponible en: http://localhost:8081/swagger-ui.html
+             ================================================================ -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.8</version>
+        </dependency>
+
     </dependencies>
 
     <build>
