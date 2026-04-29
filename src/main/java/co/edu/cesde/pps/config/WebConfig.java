@@ -43,7 +43,7 @@ public class WebConfig implements WebMvcConfigurer {
      * {@code CORS_ALLOWED_ORIGINS}. Valor por defecto: {@code http://localhost:5173}
      * (puerto estándar de React + Vite).
      */
-    @Value("${app.cors.allowed-origins:http://localhost:5173}")
+    @Value("${app.cors.allowed-origins:http://localhost:5173, http://172.45.1.200:5173}")
     private String allowedOrigins;
 
     /**
