@@ -1,159 +1,108 @@
-# Product Purchasing System
+# Product Purchasing System — Backend API
 
-Sistema de compras de productos informáticos online - Proyecto educativo Backend II
+Sistema de tienda online con API REST en Spring Boot. Proyecto educativo Backend II — CESDE 2026.
 
 ## 📋 Descripción
 
-Sistema de tienda online que permite:
-- Gestión de usuarios registrados y roles
-- CRUD administrativo de usuarios para dashboard admin
-- Carrito de compras para invitados (guest)
-- Registro/inicio de sesión obligatorio para checkout
-- Catálogo de productos y categorías
+Sistema de compras que expone una API REST con:
+- Gestión de usuarios, roles y autenticación
+- Catálogo de productos y categorías jerárquicas
+- Carrito de compras (invitados y usuarios registrados)
+- Merge automático de carrito al registrarse
 - Gestión de órdenes y pagos
-- Merge automático de carritos al registrarse
+- Módulo administrativo (usuarios y productos)
 
-## 🏗️ Estructura del Proyecto por Etapas
+## 🛠️ Tecnologías
 
-Este proyecto se desarrolla en **3 etapas progresivas** usando ramas Git independientes:
-
-### 📌 `main` - Estructura inicial
-Configuración Maven básica y estructura de directorios
-
-### 📌 `etapa01` - Entidades básicas (POJOs sin relaciones)
-- 14 entidades del modelo E-R como clases Java simples
-- Solo atributos primitivos, String, LocalDateTime, BigDecimal
-- IDs como `Long` (sin referencias a objetos)
-- Constructores, getters, setters, toString()
-- 4 enums para estados y tipos
-
-### 📌 `etapa02` - Relaciones y métodos de negocio
-- Relaciones entre entidades (objetos en lugar de IDs Long)
-- Colecciones bidireccionales (List)
-- Métodos de negocio (calculateTotal, addItem, etc.)
-- Validaciones básicas en setters
-- Manejo de referencias circulares en toString/equals/hashCode
-
-### 📌 `etapa03` - JPA/Hibernate + MySQL (Futuro)
-- Anotaciones JPA (@Entity, @ManyToOne, @OneToMany, etc.)
-- Estrategias Lazy/Eager loading
-- Configuración Hibernate + MySQL
-- Lombok para reducir boilerplate
-- Variables de entorno para configuración DB
-- Bean Validation API
-- Ver roadmap futuro del proyecto (pendiente de documentar en archivo dedicado)
+| Capa | Tecnología |
+|---|---|
+| Lenguaje | Java 21 |
+| Framework | Spring Boot 3.5 |
+| Persistencia | Spring Data JPA + Hibernate |
+| Base de datos | MySQL 8 |
+| Build | Maven 3.9 |
+| Contenedores | Docker + Docker Compose |
+| Seguridad | Spring Security Crypto (BCrypt) |
 
 ## 🗂️ Modelo E-R
 
-El modelo completo está documentado en [`documents_external/er_model_documentation.md`](documents_external/er_model_documentation.md)
+14 entidades: `User`, `Role`, `Address`, `UserSession`, `Category`, `Product`, `Cart`, `CartItem`, `Order`, `OrderItem`, `OrderStatus`, `Payment`, `PaymentStatus`, `PaymentMethod`.
 
-**Diagrama E-R:**
+Documentación completa: `documents_external/er_model_documentation.md` (solo local, no versionado).
 
-![Modelo E-R](documents_external/modelo_er_store.png)
+---
 
-**14 Entidades:**
-1. `Role` - Roles de usuario (admin, customer)
-2. `User` - Usuarios registrados
-3. `Address` - Direcciones de envío/facturación
-4. `UserSession` - Sesiones (incluye invitados)
-5. `Category` - Categorías de productos (jerarquía)
-6. `Product` - Productos vendibles
-7. `Cart` - Carritos de compra
-8. `CartItem` - Items del carrito
-9. `OrderStatus` - Catálogo de estados de orden
-10. `Order` - Órdenes de compra
-11. `OrderItem` - Items de la orden
-12. `PaymentStatus` - Catálogo de estados de pago
-13. `PaymentMethod` - Catálogo de métodos de pago
-14. `Payment` - Transacciones de pago
+## 🖥️ Desarrollo Local
 
-## 🚀 Cómo usar este repositorio
+### Requisitos
+- Java 21
+- Maven 3.9+
+- Docker + Docker Compose
 
-### Clonar el repositorio
+### 1. Configurar variables de entorno
 ```bash
-git clone git@github.com:lgoenaga/product-purchasing-system.git
-cd product-purchasing-system
+cp .env.example .env
+# Editar .env con los valores de tu entorno local
 ```
 
-### Ver las diferentes etapas
+### 2. Levantar MySQL local
 ```bash
-# Ver todas las ramas
-git branch -a
-
-# Cambiar a etapa 1
-git checkout etapa01
-
-# Cambiar a etapa 2
-git checkout etapa02
-
-# Volver a main
-git checkout main
+cp .env.docker.example .env.dev.docker
+# Editar .env.dev.docker con usuario y contraseña deseados
+docker compose -f docker-compose.dev.yml up -d
 ```
 
-### Compilar el proyecto
+### 3. Ejecutar la aplicación
 ```bash
-mvn clean compile
+mvn spring-boot:run
+# La API queda disponible en http://localhost:8081
 ```
 
-### Ejecutar perfil demo reproducible
+### Perfil demo (datos de prueba)
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=demo
 ```
 
-### Credenciales demo estables
+**Credenciales demo:**
 - Admin: `admin.demo@pps.com` / `Admin12345*`
 - Customer: `customer.demo@pps.com` / `Customer12345*`
 
-### Datos demo disponibles
-- categorías jerárquicas consistentes para `GET /api/v1/categories/tree`
-- productos activos e inactivos con campo `image` y URLs públicas sembradas
-- carrito y respuestas auth con `cart.items[*].image` para bootstrap de frontend
-- checkout e historial de órdenes con `image` por item para `order-confirmation`
-- dirección default del customer demo
-- sesión guest demo con token estable `demo-guest-session-token`
-- carrito guest demo abierto
-- orden persistida demo `ORD-DEMO-0001`
+---
 
-## 📚 Documentación adicional
+## 🚀 Despliegue en Producción (IONOS)
 
-- **Roadmap Etapa 3:** pendiente de documentar en archivo dedicado
-- **Resumen Etapa 11:** [`ETAPA11_SUMMARY.md`](ETAPA11_SUMMARY.md)
-- **Resumen Etapa 12:** [`ETAPA12_SUMMARY.md`](ETAPA12_SUMMARY.md)
-- **Resumen Etapa 13:** [`ETAPA13_SUMMARY.md`](ETAPA13_SUMMARY.md)
-- **Resumen Etapa 14:** [`ETAPA14_SUMMARY.md`](ETAPA14_SUMMARY.md)
-- **Resumen Etapa 15:** [`ETAPA15_SUMMARY.md`](ETAPA15_SUMMARY.md)
-- **Resumen Etapa 16:** [`ETAPA16_SUMMARY.md`](ETAPA16_SUMMARY.md)
-- **Referencia de endpoints backend:** [`BACKEND_ENDPOINTS_REFRENCE.md`](BACKEND_ENDPOINTS_REFRENCE.md)
-- **Notas operativas locales:** `documents_external/` se conserva solo como apoyo local y no se versiona.
+Ver [`PLAN-DEPLOY-PRODUCCION-IONOS.md`](PLAN-DEPLOY-PRODUCCION-IONOS.md) para el plan completo.
 
-## 🎯 Características clave del modelo
+### Resumen rápido en el servidor
+```bash
+# 1. Clonar / actualizar
+git pull origin main
 
-### Carrito de invitado
-- Los usuarios no registrados pueden agregar productos
-- Se identifica por `session_id`
-- Se requiere registro para completar checkout
+# 2. Crear archivo de entorno (solo primera vez)
+cp .env.prod.example .env.prod
+nano .env.prod   # completar con valores reales
 
-### Cart Merge (Política obligatoria)
-Cuando un invitado se registra y ya tiene un carrito abierto:
-1. Se fusionan los carritos (suma de cantidades)
-2. Se conservan items únicos
-3. El carrito invitado se marca como `abandoned`
-4. El usuario continúa con un único carrito activo
+# 3. Construir y levantar
+docker compose -f docker-compose.prod.yml up -d --build
 
-Los insumos extendidos de modelado y operación se conservan localmente en `documents_external/`.
+# 4. Verificar
+docker logs backend-wisegrade --tail 50 -f
+```
 
-## 🛠️ Tecnologías
+---
 
-- **Java 17**
-- **Maven** para gestión de dependencias
-- **LocalDateTime** para fechas
-- **BigDecimal** para valores monetarios
-- **(Futuro)** Hibernate/JPA, MySQL, Lombok, Bean Validation
+## 📚 Documentación
 
-## 👥 Autor
+| Archivo | Descripción |
+|---|---|
+| [`docs/BACKEND_ENDPOINTS_REFERENCE.md`](docs/BACKEND_ENDPOINTS_REFERENCE.md) | Referencia completa de endpoints REST |
+| [`docs/CONFIG_SETUP.md`](docs/CONFIG_SETUP.md) | Guía de configuración |
+| [`PLAN-DEPLOY-PRODUCCION-IONOS.md`](PLAN-DEPLOY-PRODUCCION-IONOS.md) | Plan de despliegue producción |
+| `.env.example` | Plantilla variables de entorno desarrollo |
+| `.env.prod.example` | Plantilla variables de entorno producción |
 
-Luis Goenaga - Proyecto educativo Backend II - CESDE
+---
 
-## 📄 Licencia
+## 👤 Autor
 
-Proyecto educativo - 2026
+Luis Goenaga — Proyecto educativo Backend II — CESDE 2026

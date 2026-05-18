@@ -1,14 +1,17 @@
 # ============================================
-# Docker Compose - Product Purchasing System
+# Docker Compose - DESARROLLO LOCAL
 # ============================================
 #
-# Uso:
-#   Arrancar:  docker compose up -d
-#   Detener:   docker compose down
-#   Ver logs:  docker compose logs -f mysql
+# Levanta únicamente el contenedor MySQL local.
+# La aplicación Spring Boot se ejecuta directamente con Maven.
 #
-# Requiere el archivo .env.docker en la raíz del proyecto.
-# Copia .env.example.docker como .env.docker y completa los valores.
+# Uso:
+#   Arrancar:  docker compose -f docker-compose.dev.yml up -d
+#   Detener:   docker compose -f docker-compose.dev.yml down
+#   Ver logs:  docker compose -f docker-compose.dev.yml logs -f mysql
+#
+# Requiere el archivo .env.dev.docker en la raíz del proyecto.
+# Copia .env.docker.example como .env.dev.docker y completa los valores.
 #
 
 services:
@@ -16,7 +19,7 @@ services:
     image: mysql:8.0
     container_name: pps-mysql
     env_file:
-      - .env.docker
+      - .env.dev.docker
     ports:
       - "3307:3306"
     volumes:

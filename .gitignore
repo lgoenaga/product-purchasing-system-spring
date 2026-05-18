@@ -38,7 +38,8 @@ build/
 .env
 *.env
 !.env.example
-!.env.example.docker
+!.env.docker.example
+!.env.prod.example
 *.log
 
 ### Legacy JPA manual configuration ###
@@ -47,9 +48,9 @@ src/main/resources/META-INF/persistence.xml
 ### Security Documentation (contains sensitive examples) ###
 SECURITY.md
 
-### Documentation (external reference) ###
+### Documentation (external reference & historical) ###
 documents_external/
-docs/
+docs/history/
 
 # SonarQube
 .sonar*.*

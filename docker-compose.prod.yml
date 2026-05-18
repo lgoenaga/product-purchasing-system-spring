@@ -1,0 +1,39 @@
+# ============================================
+# Docker Compose — PRODUCCIÓN IONOS
+# ============================================
+#
+# Uso en el servidor:
+#   Levantar:    docker compose -f docker-compose.prod.yml up -d --build
+#   Detener:     docker compose -f docker-compose.prod.yml down
+#   Ver logs:    docker logs backend-wisegrade --tail 100 -f
+#   Actualizar:  git pull && docker compose -f docker-compose.prod.yml up -d --build
+#
+# Requiere:
+#   - Archivo .env.prod en la raíz (copiar de .env.prod.example y completar)
+#   - Red externa app-network ya creada: docker network create app-network
+#   - Contenedor mysql-db corriendo en la misma red
+# ============================================
+
+services:
+  backend-wisegrade:
+    build: .
+    container_name: backend-wisegrade
+    env_file:
+      - .env.prod
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    restart: always
+    healthcheck:
+      # Usa endpoint público de la API (no requiere Spring Actuator)
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/api/v1/categories || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  app-network:
+    external: true
+
