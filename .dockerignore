@@ -1,0 +1,40 @@
+# ============================================
+# .dockerignore — excluye archivos del contexto de build
+# Reduce el tamaño del contexto enviado a Docker
+# ============================================
+
+# Build artifacts
+target/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# Sistema operativo
+.DS_Store
+
+# Archivos de entorno (nunca van a la imagen)
+.env
+.env.*
+!.env.prod.example
+
+# Logs
+logs/
+*.log
+
+# Documentación (no necesaria en la imagen)
+docs/
+documents_external/
+*.md
+
+# Docker (no incluir los propios compose files)
+docker-compose*.yml
+Dockerfile
+

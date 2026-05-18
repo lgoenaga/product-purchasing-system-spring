@@ -3,20 +3,20 @@
 # ============================================
 #
 # Uso en el servidor:
-#   Levantar:    docker compose -f docker-compose.prod.yml up -d --build
-#   Detener:     docker compose -f docker-compose.prod.yml down
-#   Ver logs:    docker logs backend-wisegrade --tail 100 -f
-#   Actualizar:  git pull && docker compose -f docker-compose.prod.yml up -d --build
+#   Primera vez / actualizar:  docker compose -f docker-compose.prod.yml pull && docker compose -f docker-compose.prod.yml up -d
+#   Detener:                   docker compose -f docker-compose.prod.yml down
+#   Ver logs:                  docker logs backend-wisegrade --tail 100 -f
 #
 # Requiere:
 #   - Archivo .env.prod en la raíz (copiar de .env.prod.example y completar)
 #   - Red externa app-network ya creada: docker network create app-network
 #   - Contenedor mysql-db corriendo en la misma red
+#   - Imagen publicada en Docker Hub: docker pull lgoenaga/backend-wisegrade:latest
 # ============================================
 
 services:
   backend-wisegrade:
-    build: .
+    image: lgoenaga/backend-wisegrade:latest
     container_name: backend-wisegrade
     env_file:
       - .env.prod
