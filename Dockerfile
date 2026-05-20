@@ -3,7 +3,7 @@
 # ============================================
 # Build multi-stage:
 #   Stage 1 (builder): compila el JAR con Maven
-#   Stage 2 (runtime): imagen mínima JRE Alpine
+#   Stage 2 (runtime): imagen minima JRE Alpine
 # ============================================
 
 # ---------- BUILD STAGE ----------
@@ -15,7 +15,7 @@ WORKDIR /build
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copiar código fuente y compilar
+# Copiar codigo fuente y compilar
 COPY src ./src
 RUN mvn clean package -DskipTests
 
@@ -35,6 +35,6 @@ USER spring
 
 EXPOSE 8080
 
-# -Djava.security.egd evita bloqueos de entropía en Alpine
+# -Djava.security.egd evita bloqueos de entropia en Alpine
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 

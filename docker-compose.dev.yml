@@ -11,7 +11,7 @@
 #   Ver logs:  docker compose -f docker-compose.dev.yml logs -f mysql
 #
 # Requiere el archivo .env.dev.docker en la raíz del proyecto.
-# Copia .env.docker.example como .env.dev.docker y completa los valores.
+# Copia .env.dev.docker.example como .env.dev.docker y completa los valores.
 #
 
 services:

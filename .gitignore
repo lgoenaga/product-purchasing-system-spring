@@ -37,8 +37,10 @@ build/
 ### Environment & Logs ###
 .env
 *.env
-!.env.example
-!.env.docker.example
+.env.dev.docker
+.env.test.docker
+.env.prod
+!.env.dev.docker.example
 !.env.prod.example
 *.log
 
