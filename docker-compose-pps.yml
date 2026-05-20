@@ -1,0 +1,49 @@
+services:
+
+  mysql-pps:
+    image: mysql:8.0
+    container_name: mysql-pps
+    env_file:
+      - .env.dev.docker
+    ports:
+      - "3307:3306"
+    volumes:
+      - pps-mysql-data:/var/lib/mysql
+    networks:
+      - pps-network
+
+  backend-pps:
+    image: lgoenaga/backend-pps:v1
+    container_name: backend-pps
+    env_file:
+      - .env.local
+    depends_on:
+      - mysql-pps
+    networks:
+      - pps-network
+
+  frontend-pps:
+    image: lgoenaga/frontend-pps:v1
+    container_name: frontend-pps
+    networks:
+      - pps-network
+
+  nginx-pps:
+    image: nginx:alpine
+    container_name: nginx-pps
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend-pps
+      - frontend-pps
+    networks:
+      - pps-network
+
+networks:
+  pps-network:
+
+volumes:
+  pps-mysql-data:
+    name: pps-mysql-data
